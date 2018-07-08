@@ -113,19 +113,23 @@ class DRLNode {
     }
 
     draw(context : CanvasRenderingContext2D) {
-        const gap : number = (w * 0.9) / nodes
+        const gap : number = (2 * (w * 0.9)) / nodes
         const index = this.i % 2, index2 = (this.i + 1) % 2
+        const x : number = Math.floor((this.i)/2) * gap + gap * (index + index2)
         context.strokeStyle = 'teal'
         context.lineWidth = Math.min(w, h) / 60
-        context.lineCap = 'rounds'
+        context.lineCap = 'round'
         context.save()
-        context.translate(this.i * gap + gap * index2, h/2)
+        context.translate(x, h/2)
         context.rotate(Math.PI/2 * this.state.scale)
         context.beginPath()
         context.moveTo(0, 0)
         context.lineTo(-gap  * index2, -gap * index)
         context.stroke()
         context.restore()
+        if (this.next) {
+            this.next.draw(context)
+        }
     }
 
     update(stopcb : Function) {
