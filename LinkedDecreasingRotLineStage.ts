@@ -80,3 +80,58 @@ class Animator {
         }
     }
 }
+
+class DRLNode {
+    prev : DRLNode
+
+    next : DRLNode
+
+    state : State = new State()
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < nodes - 1) {
+            this.next = new DRLNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        const gap : number = (w * 0.9) / nodes
+        const index = this.i % 2, index2 = (this.i + 1) % 2
+        context.strokeStyle = 'teal'
+        context.lineWidth = Math.min(w, h) / 60
+        context.lineCap = 'rounds'
+        context.save()
+        context.translate(this.i * gap + gap * index2, h/2)
+        context.rotate(Math.PI/2 * this.state.scale)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(-gap  * index2, -gap * index)
+        context.stroke()
+        context.restore()
+    }
+
+    update(stopcb : Function) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb : Function) {
+        this.state.startUpdating(startcb)
+    }
+
+    getNext(dir : number, cb : Function) {
+        var curr = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
