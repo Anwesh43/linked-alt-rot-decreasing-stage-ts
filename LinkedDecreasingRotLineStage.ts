@@ -5,6 +5,11 @@ class LinkedDecreasingRotLineStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
 
     context : CanvasRenderingContext2D
+
+    linkedDRL : LinkedDRL = new LinkedDRL()
+
+    animator : Animator = new Animator()
+
     constructor() {
         this.initCanvas()
     }
@@ -19,11 +24,19 @@ class LinkedDecreasingRotLineStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.linkedDRL.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-            alert('clicked on canvas')
+            this.linkedDRL.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.linkedDRL.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 
