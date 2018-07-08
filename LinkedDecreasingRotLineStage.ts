@@ -135,3 +135,27 @@ class DRLNode {
         return this
     }
 }
+
+class LinkedDRL {
+
+    curr : DRLNode = new DRLNode(0)
+
+    dir : number = 1
+
+    draw(canvas : CanvasRenderingContext2D) {
+        this.curr.draw(canvas)
+    }
+
+    update(stopcb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            stopcb()
+        })
+    }
+
+    startUpdating(startcb : Function) {
+        this.curr.startUpdating(startcb)
+    }
+}
